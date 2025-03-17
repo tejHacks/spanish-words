@@ -5,8 +5,9 @@
     <div class="word-card" v-if="currentWord">
       <p class="spanish-word">{{ currentWord.word }}</p>
       <p class="english-translation">{{ currentWord.translation }}</p>
+      <button @click="previousWord">⏮️ Previous Word</button>
       <button @click="speakWord">🔊 Pronounce</button>
-      <button @click="nextWord">➡ Next Word</button>
+      <button @click="nextWord">⏭️ Next Word</button>
     </div>
   </div>
 </template>
@@ -451,14 +452,20 @@ computed: {
 methods:{
 // the speakWord function goes here and allows the user to hear the word
 speakWord() {
-      const utterance = new SpeechSynthesisUtterance(this.currentWord.word);
-      utterance.lang = "es-ES";
-      window.speechSynthesis.speak(utterance);
-    },
+  window.speechSynthesis.cancel(); // Clear any ongoing speech
+  const utterance = new SpeechSynthesisUtterance(this.words[this.currentIndex].word);
+  utterance.lang = "es-ES";
+  window.speechSynthesis.speak(utterance);
+}
+,
 // get the next word in the list
 nextWord() {
 this.currentIndex = (this.currentIndex + 1) % this.words.length;
+},
+previousWord() {
+  this.currentIndex = (this.currentIndex - 1 + this.words.length) % this.words.length;
 }
+
 }
 };
 </script>
@@ -473,7 +480,7 @@ body {
   font-family: 'Lobster', cursive;
   color: #1E1E1E;
   text-align: center;
-  background-image: url('/guitar.jpg');
+  background: url('/guitar.jpg') cover no-repeat fixed;
   /* @/assets/guitar-image.jpg') no-repeat center center fixed; */
 }
 
